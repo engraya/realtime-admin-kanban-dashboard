@@ -4,11 +4,9 @@ import {
     Authenticated, 
 } from '@refinedev/core';
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-
 import { AuthPage,ErrorComponent
 ,useNotificationProvider} from '@refinedev/antd';
 import "@refinedev/antd/dist/reset.css";
-
 import { liveProvider, dataProvider } from './providers';
 import { App as AntdApp } from "antd"
 import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
@@ -18,6 +16,9 @@ import { authProvider } from './providers';
 import { Home, ForgotPassword, Login, Register } from './pages';
 import Layout from './components/Layout/Layout';
 import { resources } from './config/Resources';
+import CompanyList from "./pages/Company/List"
+import CreateCompany from './pages/Company/Create';
+import EditCompany from './pages/Company/Edit';
 
 
 
@@ -51,15 +52,19 @@ function App() {
                                     key="authenticated-inner"
                                     fallback={<CatchAllNavigate to="/login" />}
                                 >
-
                                         <Layout>
                                         <Outlet />
                                         </Layout>
                                 </Authenticated>
                             }
                         >
-
                             <Route index element={<Home />}  />
+                            <Route path='/companies'>
+                            <Route path="/companies" element={<CompanyList />}  />
+                            <Route path="create" element={<CreateCompany />}  />
+                            <Route path="edit/:id" element={<EditCompany />}  />
+                            </Route>
+
                             <Route path="*" element={<ErrorComponent />} />
                         </Route>
                         <Route element={ <Authenticated key="authenticated-outer" fallback={<Outlet />}> <NavigateToResource /></Authenticated>}>
