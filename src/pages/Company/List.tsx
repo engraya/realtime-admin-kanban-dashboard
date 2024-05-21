@@ -1,6 +1,6 @@
 import React from 'react'
 import { CreateButton, FilterDropdown, List } from '@refinedev/antd'
-import { getDefaultFilter, useGo } from '@refinedev/core'
+import { getDefaultFilter, HttpError, useGo } from '@refinedev/core'
 import { useTable } from '@refinedev/antd';
 import { Input, Space, Table } from 'antd';
 import { COMPANIES_LIST_QUERY } from '@/graphql/queries';
@@ -10,8 +10,14 @@ import { Text } from '@/components/Text';
 import { Company } from '@/graphql/schema.types';
 import { currencyNumber } from '@/utilities';
 import { EditButton, DeleteButton } from '@refinedev/antd';
+import { GetFieldsFromList } from '@refinedev/nestjs-query';
+import { CompaniesListQuery } from '@/graphql/types';
 function CompanyList({ children } : React.PropsWithChildren) {
-  const { tableProps, filters } = useTable({
+  const { tableProps, filters } = useTable<
+  GetFieldsFromList<CompaniesListQuery>,
+  HttpError,
+  GetFieldsFromList<CompaniesListQuery>
+  >({
     resource : 'companies',
     onSearch : (values) => {
       return [
@@ -34,7 +40,7 @@ function CompanyList({ children } : React.PropsWithChildren) {
     filters : {
       initial : [
         {
-          filed : 'name',
+          field : 'name',
           operator : 'contains',
           value : undefined,
         },

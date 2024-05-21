@@ -19,10 +19,9 @@ import { resources } from './config/Resources';
 import CompanyList from "./pages/Company/List"
 import CreateCompany from './pages/Company/Create';
 import EditCompany from './pages/Company/Edit';
-
-
-
-
+import TasksList from './pages/Tasks/TasksList';
+import TasksCreatePage from './pages/Tasks/TasksCreatePage';
+import TasksEditPage from './pages/Tasks/TasksEditPage';
 function App() {
     
     
@@ -41,7 +40,7 @@ function App() {
                             syncWithLocation: true,
                             warnWhenUnsavedChanges: true,
                             useNewQueryKeys: true,
-                                projectId: "AG0b5X-hRvR6w-PJHoHQ",
+                            projectId: "AG0b5X-hRvR6w-PJHoHQ",
                             liveMode: "auto",
                         }}
                 >
@@ -60,11 +59,16 @@ function App() {
                         >
                             <Route index element={<Home />}  />
                             <Route path='/companies'>
-                            <Route path="/companies" element={<CompanyList />}  />
-                            <Route path="create" element={<CreateCompany />}  />
-                            <Route path="edit/:id" element={<EditCompany />}  />
+                                <Route path="/companies" element={<CompanyList />}  />
+                                <Route path="create" element={<CreateCompany />}  />
+                                <Route path="edit/:id" element={<EditCompany />}  />
                             </Route>
-
+                            <Route path='/tasks' element={<TasksList>
+                                <Outlet/>  
+                            </TasksList>}>
+                                <Route path="new" element={<TasksCreatePage/>}/>
+                                <Route path="edit/:id" element={<TasksEditPage/>}/>
+                            <Route/>
                             <Route path="*" element={<ErrorComponent />} />
                         </Route>
                         <Route element={ <Authenticated key="authenticated-outer" fallback={<Outlet />}> <NavigateToResource /></Authenticated>}>
