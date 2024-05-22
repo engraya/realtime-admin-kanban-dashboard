@@ -32,10 +32,12 @@ function CompanyList({ children } : React.PropsWithChildren) {
       pageSize : 12
     },
     sorters : {
-      initial : {
-        field : 'createdAt',
-        order : 'desc'
-      }
+      initial : [
+        {
+          field : 'createdAt',
+          order : 'desc'
+        },
+      ]
     },
     filters : {
       initial : [

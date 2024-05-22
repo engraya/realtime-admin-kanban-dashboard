@@ -63,9 +63,7 @@ function App() {
                                 <Route path="create" element={<CreateCompany />}  />
                                 <Route path="edit/:id" element={<EditCompany />}  />
                             </Route>
-                            <Route path='/tasks' element={<TasksList>
-                                <Outlet/>  
-                            </TasksList>}>
+                            <Route path='/tasks' element={<TasksList><Outlet/></TasksList>}>
                                 <Route path="new" element={<TasksCreatePage/>}/>
                                 <Route path="edit/:id" element={<TasksEditPage/>}/>
                             <Route/>
@@ -77,6 +75,7 @@ function App() {
                             <Route path="/login" element={<Login />}  />
                             <Route path="/register" element={<Register />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
+                        </Route>
                         </Route>
                     </Routes>
                     <RefineKbar />
