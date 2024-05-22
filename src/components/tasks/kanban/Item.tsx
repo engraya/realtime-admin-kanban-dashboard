@@ -1,6 +1,6 @@
 import { TASK_STAGES_QUERY, TASKS_QUERY } from '@/graphql/queries';
 import { TaskStage } from '@/graphql/schema.types';
-import { DragOverlay, UseDraggableArguments, useDroppable } from '@dnd-kit/core'
+import { DragOverlay, UseDraggableArguments, useDraggable } from '@dnd-kit/core'
 import { useList } from '@refinedev/core';
 import React from 'react';
 
@@ -13,7 +13,7 @@ function KanbanItem({ children, id,  data } : React.PropsWithChildren<Props>) {
 
 
 
-  const { attributes, listeners, setNodeRef, active } = useDroppable({
+  const { attributes , listeners, setNodeRef, active } = useDraggable({
     id,
     data 
 })
