@@ -1,3 +1,5 @@
+
+
 import React from 'react'
 import { CreateButton, FilterDropdown, List } from '@refinedev/antd'
 import { getDefaultFilter, HttpError, useGo } from '@refinedev/core'
@@ -53,6 +55,7 @@ function CompanyList({ children } : React.PropsWithChildren) {
     }
   }) 
   const go = useGo(); 
+
   return (
     <div>
         <List
@@ -74,13 +77,16 @@ function CompanyList({ children } : React.PropsWithChildren) {
       />
     )}
     >
+
       <Table
       {...tableProps}
       pagination={{
         ...tableProps.pagination
       }}
       >
+        
         <Table.Column<Company>
+   
         dataIndex='name'
         title='Compant Title'
         defaultFilteredValue={getDefaultFilter('id', filters)}
