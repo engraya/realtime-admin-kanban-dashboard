@@ -32,6 +32,7 @@ const TasksCreatePage = () => {
    * https://refine.dev/docs/ui-integrations/ant-design/hooks/use-modal-form/#modalprops
    */
   const { formProps, modalProps, close } = useModalForm({
+    resource : 'tasks',
     // specify the action to perform i.e., create or edit
     action: "create",
     // specify whether the modal should be visible by default

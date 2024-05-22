@@ -18,111 +18,105 @@ type Task = GetFieldsFromList<TasksQuery>
 type TaskStage = GetFieldsFromList<TaskStagesQuery> & { tasks : Task[]}
 function TaskList({ children} : React.PropsWithChildren) {
 
-  const { replace } = useNavigation();
+  const { replace } = useNavigation()
 
-
-
-
-  const { data : stages, isLoading : isLoadingStages } = useList<TaskStage>({
-    resource : 'taskStages',
-    filters : [
+  const { data: stages, isLoading: isLoadingStages } = useList<TaskStage>({
+    resource: 'taskStages',
+    filters: [
       {
-        field : 'title',
-        operator : 'in',
-        value : ['TODO', 'IN PROGRESS', 'IN REVIEW', 'DONE']
+        field: 'title',
+        operator: 'in',
+        value: ['TODO', 'IN PROGRESS', 'IN REVIEW', 'DONE']
       }
     ],
-    sorters : [
+    sorters: [
       {
-        field : 'createdAt',
-        order : 'asc'
+        field: 'createdAt',
+        order: 'asc'
       }
     ],
-    meta : {
-      gqlQuery : TASK_STAGES_QUERY
+    meta: {
+      gqlQuery: TASK_STAGES_QUERY
+    }
+  })
+  const { data: tasks, isLoading: isLoadingTasks } = useList<GetFieldsFromList<TasksQuery>>({
+    resource: 'tasks',
+    sorters: [
+      {
+        field: 'dueDate',
+        order: 'asc',
+      }
+    ],
+    queryOptions: {
+      enabled: !!stages,
+    },
+    pagination: {
+      mode: 'off'
+    },
+    meta: {
+      gqlQuery: TASKS_QUERY
     }
   })
 
-  const { data : tasks, isLoading : isLoadingTasks } = useList<GetFieldsFromList<TasksQuery>>({
-    resource : 'tasks',
-    sorters : [
-      {
-        field : 'dueDate',
-        order : 'asc',
-      }
-    ],
-    queryOptions : {
-      enabled : !!stages
-    },
-    pagination : {
-      mode : 'off'
-    },
-    meta : {
-      gqlQuery : TASKS_QUERY
-    }
-  })
-
-  const { mutate : updateTask } = useUpdate();
+  const { mutate: updateTask } = useUpdate();
 
   const taskStages = React.useMemo(() => {
-    if(!tasks?.data || !stages?.data) {
+    if (!tasks?.data || !stages?.data) {
       return {
-        unassignedStage : [],
-        stages : []
+        unassignedStage: [],
+        stages: []
       }
     }
 
     const unassignedStage = tasks.data.filter((task) => task.stageId === null)
 
-    const grouped : TaskStage[] = stages.data.map((stage) => ({
+    const grouped: TaskStage[] = stages.data.map((stage) => ({
       ...stage,
-      task : tasks.data.filter((task) => task?.stageId?.toString() === stage.id)
+      tasks: tasks.data.filter((task) => task.stageId?.toString() === stage.id)
     }))
-
+    
     return {
       unassignedStage,
-      columns : grouped
+      columns: grouped
     }
+  }, [stages, tasks])
 
-  }, [stages, tasks]);
+  const handleAddCard = (args: { stageId: string}) => {
+    const path = args.stageId === 'unassigned' 
+      ? '/tasks/new'
+      : `/tasks/new?stageId=${args.stageId}` 
 
-  const handleAddCard = (args : { stageId : string}) => {
-     const path = args.stageId === 'unassigned' 
-     ? '/tasks/new'
-     : `/tasks/new?stageId=${args.stageId}`
+      replace(path);
+  }
 
-     replace(path)
-  };
-
-  const handleOnDragEnd = (event : DragEndEvent) => {
+  const handleOnDragEnd = (event: DragEndEvent) => {
     let stageId = event.over?.id as undefined | string | null
     const taskId = event.active.id as string
     const taskStageId = event.active.data.current?.stageId
 
-    if (taskStageId === stageId) return;
+    if(taskStageId === stageId) return;
 
     if(stageId === 'unassigned') {
       stageId = null
     }
 
     updateTask({
-      resource : 'tasks',
-      id : taskId,
-      values : {
-        stageId : stageId,
+      resource: 'tasks',
+      id: taskId,
+      values: {
+        stageId: stageId,
       },
-      successNotification : false,
-      mutationMode : 'optimistic',
-      meta : {
-        gqlMutation : UPDATE_TASK_STAGE_MUTATION
+      successNotification: false,
+      mutationMode: 'optimistic',
+      meta: {
+        gqlMutation: UPDATE_TASK_STAGE_MUTATION
       }
     })
-
   }
 
-  const loading = isLoadingStages || isLoadingTasks;
+  const isLoading = isLoadingStages || isLoadingTasks
 
-  if (loading) return <PageSkeleton/>
+  if(isLoading) return <PageSkeleton />
 
 
   return (
@@ -161,7 +155,7 @@ function TaskList({ children} : React.PropsWithChildren) {
           count={column.tasks?.length}
           onAddClick={() => handleAddCard({ stageId : column.id})}
           >
-            {!loading && column.tasks?.map((task) => (
+            {!isLoading && column.tasks?.map((task) => (
               <KanbanItem key={task.id} id={task.id} data={task}>
                 <ProjectCardMemo
                 {...task}
